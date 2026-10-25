@@ -42,8 +42,16 @@ def insert_predio(d):
     conn.commit(); conn.close()
 
 def cargar_ejemplos():
-    ejemplos = [("Casa Centro", "Casa", 280_000_000, 120, 3, 2, "Casa esquinera.", 2.9963, -76.5922, "Calle 5", "Centro", "Carlos", "3001234567")]
-    for e in ejemplos: insert_predio({"titulo": e[0], "tipo": e[1], "precio": e[2], "area": e[3], "habitaciones": e[4], "banos": e[5], "descripcion": e[6], "lat": e[7], "lon": e[8], "direccion": e[9], "barrio": e[10], "comisionista": e[11], "whatsapp": e[12], "foto_base64": None})
+    # ¡Aquí están los 5 ejemplos restaurados!
+    ejemplos = [
+        ("Casa esquinera Barrio Centro", "Casa", 280_000_000, 120, 3, 2, "Casa esquinera en el corazón de Quilichao, cerca al parque principal.", 2.9963, -76.5922, "Calle 5 # 10-23", "Centro", "Carlos Muñoz", "3001234567"),
+        ("Lote 500m² vía Mondomo", "Lote", 150_000_000, 500, 0, 0, "Lote plano con acceso a vía principal.", 3.0220, -76.5510, "Km 5 vía Mondomo", "Rural", "Carlos Muñoz", "3001234567"),
+        ("Apartamento moderno Las Américas", "Apartamento", 195_000_000, 78, 2, 2, "Apartamento con acabados modernos, balcón y parqueadero.", 2.9925, -76.5850, "Carrera 8 # 12-45", "Las Américas", "Carlos Muñoz", "3001234567"),
+        ("Finca recreativa San Antonio", "Finca", 450_000_000, 3000, 4, 3, "Finca con casa principal, piscina y cultivos.", 3.0450, -76.6100, "Corregimiento San Antonio", "Rural", "Carlos Muñoz", "3001234567"),
+        ("Local comercial Parque Principal", "Local comercial", 320_000_000, 60, 0, 1, "Local sobre vía principal, alto flujo peatonal.", 2.9965, -76.5915, "Calle 4 # 9-12", "Centro", "Carlos Muñoz", "3001234567"),
+    ]
+    for e in ejemplos: 
+        insert_predio({"titulo": e[0], "tipo": e[1], "precio": e[2], "area": e[3], "habitaciones": e[4], "banos": e[5], "descripcion": e[6], "lat": e[7], "lon": e[8], "direccion": e[9], "barrio": e[10], "comisionista": e[11], "whatsapp": e[12], "foto_base64": None})
 
 def format_cop(precio): return "$" + f"{int(precio):,}".replace(",", ".")
 
@@ -56,7 +64,7 @@ with st.sidebar:
     menu = st.radio("Ir a:", ["🏠 Inicio", "➕ Registrar", "🗺️ Mapa", "📋 Mis Predios"], label_visibility="collapsed")
     st.divider()
     if st.button("📥 Cargar datos de ejemplo"):
-        cargar_ejemplos(); st.success("Cargados"); st.rerun()
+        cargar_ejemplos(); st.success("5 predios de ejemplo cargados"); st.rerun()
 
 df = get_predios()
 
