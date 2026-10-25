@@ -17,7 +17,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# 2. CSS de App Profesional
+# 2. CSS Premium (Look de App Inmobiliaria)
 st.markdown("""
 <style>
     #MainMenu {visibility: hidden;} footer {visibility: hidden;} header {visibility: hidden;}
@@ -27,7 +27,7 @@ st.markdown("""
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
     html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
 
-    /* Encabezado Azul Profundo */
+    /* Header Azul Profundo */
     .main-header {
         background: linear-gradient(135deg, #1E3A8A, #3B82F6);
         padding: 1.5rem 1rem; border-radius: 20px; color: white;
@@ -36,17 +36,20 @@ st.markdown("""
     .main-header h1 { margin: 0; font-size: 24px; font-weight: 700; }
     .main-header p { margin: 5px 0 0 0; font-size: 13px; opacity: 0.9; }
 
-    /* Tarjetas */
+    /* Tarjetas Estilo Zillow */
     .card {
-        background: white; border-radius: 16px; padding: 15px;
+        background: white; border-radius: 16px; padding: 0; overflow: hidden;
         box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #EAEAEA; margin-bottom: 15px;
     }
-    .prop-price { color: #059669; font-size: 20px; font-weight: 700; }
-    .badge-tipo { background: #E0E7FF; color: #1E3A8A; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+    .card-body { padding: 15px; }
+    .card-img { width: 100%; height: 180px; object-fit: cover; }
+    
+    .prop-price { color: #059669; font-size: 20px; font-weight: 700; margin: 5px 0; }
+    .badge-tipo { background: #E0E7FF; color: #1E3A8A; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
     .card-title { margin: 8px 0 4px 0; font-size: 16px; font-weight: 600; color: #1F2937; }
-    .card-loc { font-size: 13px; color: #6B7280; }
+    .card-loc { font-size: 13px; color: #6B7280; display: flex; align-items: center; gap: 4px; }
 
-    /* Botones de Navegación */
+    /* Navegación Inferior */
     div.stButton > button {
         background-color: white; color: #4B5563; border: 1px solid #E5E7EB;
         border-radius: 12px; padding: 8px 2px; width: 100%; font-weight: 600; font-size: 12px;
@@ -56,12 +59,13 @@ st.markdown("""
         background-color: #1E3A8A; color: white; border: none; box-shadow: 0 4px 10px rgba(30, 58, 138, 0.3);
     }
     
-    /* Formularios */
+    /* Formularios y Expanders */
     div[data-testid="stForm"] { background: white; border-radius: 16px; padding: 15px; border: 1px solid #EAEAEA; }
+    div[data-testid="stExpander"] { background: white; border-radius: 12px; border: 1px solid #EAEAEA; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
 </style>
 """, unsafe_allow_html=True)
 
-# 3. Base de Datos
+# 3. Base de Datos (Lógica Original Restaurada)
 DB_FILE = "quilichao_proptech.db"
 
 def init_db():
@@ -111,10 +115,9 @@ def cargar_ejemplos():
 
 init_db()
 
-# 4. Control de Navegación
+# 4. Navegación
 if "pagina" not in st.session_state: st.session_state.pagina = "inicio"
 
-# 5. Renderizado de Páginas
 st.markdown("""
 <div class="main-header">
     <h1>🏘️ Quilichao PropTech</h1>
@@ -124,47 +127,59 @@ st.markdown("""
 
 df = get_predios()
 
+# 5. VISTAS
 if st.session_state.pagina == "inicio":
     c1, c2 = st.columns(2)
-    with c1: st.markdown(f'<div class="card" style="text-align:center;"><h3 style="color:#1E3A8A; margin:0;">{len(df)}</h3><p style="color:#6B7280; font-size:12px; margin:0;">Predios en cartera</p></div>', unsafe_allow_html=True)
-    with c2: st.markdown(f'<div class="card" style="text-align:center;"><h3 style="color:#059669; margin:0;">{format_cop(df["precio"].sum()/1_000_000) if len(df)>0 else "$0"}M</h3><p style="color:#6B7280; font-size:12px; margin:0;">Valor total</p></div>', unsafe_allow_html=True)
+    with c1: st.markdown(f'<div class="card" style="text-align:center; padding:15px;"><h3 style="color:#1E3A8A; margin:0;">{len(df)}</h3><p style="color:#6B7280; font-size:12px; margin:0;">Predios</p></div>', unsafe_allow_html=True)
+    with c2: st.markdown(f'<div class="card" style="text-align:center; padding:15px;"><h3 style="color:#059669; margin:0;">{format_cop(df["precio"].sum()/1_000_000) if len(df)>0 else "$0"}M</h3><p style="color:#6B7280; font-size:12px; margin:0;">Valor total</p></div>', unsafe_allow_html=True)
     
     st.markdown("### 🆕 Últimos predios")
+    
     if len(df) == 0:
         st.info("Aún no tienes predios registrados.")
-        if st.button("📥 Cargar 5 predios de ejemplo para probar"):
+        if st.button("📥 Cargar 5 predios de ejemplo para probar", use_container_width=True):
             cargar_ejemplos()
             st.rerun()
     else:
         for _, row in df.head(3).iterrows():
+            # Tarjeta con imagen o placeholder
+            img_html = f'<img src="data:image/jpeg;base64,{row["foto_base64"]}" class="card-img">' if pd.notna(row["foto_base64"]) and row["foto_base64"] else '<div class="card-img" style="background:#F3F4F6;display:flex;align-items:center;justify-content:center;font-size:3rem;">🏠</div>'
+            
             st.markdown(f"""
             <div class="card">
-                <span class="badge-tipo">{row['tipo']}</span>
-                <h4 class="card-title">{row['titulo']}</h4>
-                <p class="prop-price">{format_cop(row['precio'])}</p>
-                <p class="card-loc">📍 {row['direccion']}, {row['barrio']}</p>
+                {img_html}
+                <div class="card-body">
+                    <span class="badge-tipo">{row['tipo']}</span>
+                    <h4 class="card-title">{row['titulo']}</h4>
+                    <p class="prop-price">{format_cop(row['precio'])}</p>
+                    <p class="card-loc">📍 {row['direccion']}, {row['barrio']}</p>
+                </div>
             </div>
             """, unsafe_allow_html=True)
 
 elif st.session_state.pagina == "registrar":
     st.markdown("### ➕ Registrar Predio")
+    
+    # 1. Selector de Mapa (Fuera del form para no borrar datos)
     if "pick_lat" not in st.session_state:
         st.session_state.pick_lat, st.session_state.pick_lon = 2.9963, -76.5922
         
-    st.markdown("**📍 Toca el mapa para ubicar el predio**")
+    st.markdown("**📍 Toca el mapa para ubicar el predio:**")
     m_pick = folium.Map(location=[st.session_state.pick_lat, st.session_state.pick_lon], zoom_start=14)
-    folium.Marker([st.session_state.pick_lat, st.session_state.pick_lon], icon=folium.Icon(color="red")).add_to(m_pick)
-    map_result = st_folium(m_pick, height=250, width=None, returned_objects=["last_clicked"], key="picker")
+    folium.Marker([st.session_state.pick_lat, st.session_state.pick_lon], icon=folium.Icon(color="red", icon="home", prefix="fa")).add_to(m_pick)
+    map_result = st_folium(m_pick, height=220, width=None, returned_objects=["last_clicked"], key="picker")
+    
     if map_result and map_result.get("last_clicked"):
         st.session_state.pick_lat = map_result["last_clicked"]["lat"]
         st.session_state.pick_lon = map_result["last_clicked"]["lng"]
         st.rerun()
-    
-    st.info(f"📍 Coordenadas: {st.session_state.pick_lat:.6f}, {st.session_state.pick_lon:.6f}")
+        
+    st.caption(f"📍 Coordenadas seleccionadas: {st.session_state.pick_lat:.6f}, {st.session_state.pick_lon:.6f}")
 
-    with st.form("form_registro"):
+    # 2. Formulario Completo (Lógica Original)
+    with st.form("form_registro", clear_on_submit=True):
         titulo = st.text_input("Título del predio *")
-        tipo = st.selectbox("Tipo *", ["Casa", "Apartamento", "Lote", "Finca", "Local comercial"])
+        tipo = st.selectbox("Tipo *", ["Casa", "Apartamento", "Lote", "Finca", "Local comercial", "Oficina", "Bodega"])
         precio = st.number_input("Precio (COP) *", min_value=0, step=1000000)
         area = st.number_input("Área (m²) *", min_value=0.0)
         
@@ -172,25 +187,32 @@ elif st.session_state.pagina == "registrar":
         with c1: hab = st.number_input("Habitaciones", min_value=0, step=1)
         with c2: ban = st.number_input("Baños", min_value=0, step=1)
         
-        direccion = st.text_input("Dirección *")
-        barrio = st.text_input("Barrio / Sector")
-        comisionista = st.text_input("Tu nombre *")
-        whatsapp = st.text_input("Tu WhatsApp *")
-        foto = st.file_uploader("Foto principal", type=["jpg", "jpeg", "png"])
+        direccion = st.text_input("Dirección *", placeholder="Ej: Calle 5 # 10-23")
+        barrio = st.text_input("Barrio / Sector", placeholder="Ej: Centro")
+        descripcion = st.text_area("Descripción (Opcional)", height=80)
+        
+        c3, c4 = st.columns(2)
+        with c3: comisionista = st.text_input("Tu nombre *")
+        with c4: whatsapp = st.text_input("Tu WhatsApp *")
+        
+        foto = st.file_uploader("Foto principal (Opcional)", type=["jpg", "jpeg", "png"])
         
         if st.form_submit_button("Guardar Predio 💾", use_container_width=True):
-            if titulo and direccion and comisionista:
+            if titulo and direccion and comisionista and whatsapp:
                 foto_b64 = None
                 if foto:
-                    img = Image.open(foto).convert("RGB")
-                    img.thumbnail((800, 800))
-                    buf = io.BytesIO()
-                    img.save(buf, format="JPEG")
-                    foto_b64 = base64.b64encode(buf.getvalue()).decode()
+                    try:
+                        img = Image.open(foto).convert("RGB")
+                        img.thumbnail((800, 800)) # Redimensionar para no saturar
+                        buf = io.BytesIO()
+                        img.save(buf, format="JPEG")
+                        foto_b64 = base64.b64encode(buf.getvalue()).decode()
+                    except:
+                        st.warning("No se pudo procesar la imagen.")
                 
                 insert_predio({
                     "titulo": titulo, "tipo": tipo, "precio": precio, "area": area,
-                    "habitaciones": hab, "banos": ban, "descripcion": "",
+                    "habitaciones": hab, "banos": ban, "descripcion": descripcion,
                     "lat": st.session_state.pick_lat, "lon": st.session_state.pick_lon,
                     "direccion": direccion, "barrio": barrio, "comisionista": comisionista,
                     "whatsapp": whatsapp, "foto_base64": foto_b64
@@ -199,16 +221,22 @@ elif st.session_state.pagina == "registrar":
                 st.balloons()
                 st.rerun()
             else:
-                st.error("Completa los campos obligatorios (*)")
+                st.error("Por favor completa los campos obligatorios (*)")
 
 elif st.session_state.pagina == "mapa":
     st.markdown("### 🗺️ Mapa de la cartera")
     if len(df) > 0:
-        # Usamos OpenStreetMap clásico para asegurar que se vea en la nube
         m = folium.Map(location=[df["lat"].mean(), df["lon"].mean()], zoom_start=14, tiles="OpenStreetMap")
         for _, row in df.iterrows():
-            popup_html = f"<b>{row['titulo']}</b><br>{format_cop(row['precio'])}<br>{row['direccion']}"
-            folium.Marker([row["lat"], row["lon"]], popup=folium.Popup(popup_html, max_width=200)).add_to(m)
+            popup_html = f"""
+            <div style="font-family: Arial; min-width: 150px;">
+                <b>{row['titulo']}</b><br>
+                <span style="color:#059669; font-weight:bold;">{format_cop(row['precio'])}</span><br>
+                {row['direccion']}<br>
+                {row['tipo']}
+            </div>
+            """
+            folium.Marker([row["lat"], row["lon"]], popup=folium.Popup(popup_html, max_width=250)).add_to(m)
         st_folium(m, width=None, height=500, returned_objects=[])
     else:
         st.info("No hay predios en el mapa. Registra uno o carga los ejemplos en Inicio.")
@@ -217,37 +245,53 @@ elif st.session_state.pagina == "predios":
     st.markdown("### 📋 Mis Predios")
     if len(df) == 0: 
         st.info("Tu cartera está vacía.")
+    
     for _, row in df.iterrows():
+        img_html = f'<img src="data:image/jpeg;base64,{row["foto_base64"]}" class="card-img" style="height:120px;">' if pd.notna(row["foto_base64"]) and row["foto_base64"] else '<div class="card-img" style="height:120px;background:#F3F4F6;display:flex;align-items:center;justify-content:center;font-size:2rem;">🏠</div>'
+        
         st.markdown(f"""
         <div class="card">
-            <span class="badge-tipo">{row['tipo']}</span>
-            <h4 class="card-title">{row['titulo']}</h4>
-            <p class="prop-price">{format_cop(row['precio'])}</p>
-            <p class="card-loc">📍 {row['direccion']} | 📐 {row['area']} m²</p>
+            {img_html}
+            <div class="card-body">
+                <span class="badge-tipo">{row['tipo']}</span>
+                <h4 class="card-title">{row['titulo']}</h4>
+                <p class="prop-price">{format_cop(row['precio'])}</p>
+                <p class="card-loc">📍 {row['direccion']}, {row['barrio']} | 📐 {row['area']} m²</p>
+            </div>
         </div>
         """, unsafe_allow_html=True)
         
-        # Botones de acción dentro de la tarjeta
-        c1, c2 = st.columns(2)
-        msg = f"Hola, te comparto este predio:\n🏘️ {row['titulo']}\n💰 {format_cop(row['precio'])}\n📍 {row['direccion']}\n🗺️ https://www.google.com/maps?q={row['lat']},{row['lon']}"
-        wa_url = f"https://wa.me/?text={urllib.parse.quote(msg)}"
-        c1.link_button("📱 Compartir", wa_url, use_container_width=True)
-        if c2.button("🗑️ Eliminar", key=f"del_{row['id']}", use_container_width=True):
-            delete_predio(int(row["id"]))
-            st.rerun()
+        # Ficha Expandible y Botones de Acción
+        with st.expander("👁️ Ver ficha completa y compartir"):
+            if row['descripcion']: st.write(f"**Descripción:** {row['descripcion']}")
+            st.write(f"**Comisionista:** {row['comisionista']}")
+            st.write(f"**WhatsApp:** {row['whatsapp']}")
+            st.write(f"**Habitaciones:** {row['habitaciones']} | **Baños:** {row['banos']}")
+            st.write(f"**Coordenadas:** {row['lat']:.6f}, {row['lon']:.6f}")
+            
+            # Botones
+            c1, c2 = st.columns(2)
+            msg = f"Hola, te comparto este predio:\n\n🏘️ *{row['titulo']}*\n💰 {format_cop(row['precio'])}\n📐 {row['area']} m²\n📍 {row['direccion']}, {row['barrio']}\n🗺️ https://www.google.com/maps?q={row['lat']},{row['lon']}\n\nContacto: {row['comisionista']} - {row['whatsapp']}"
+            wa_url = f"https://wa.me/?text={urllib.parse.quote(msg)}"
+            c1.link_button("📱 Compartir por WhatsApp", wa_url, use_container_width=True)
+            
+            if c2.button("🗑️ Eliminar Predio", key=f"del_{row['id']}", use_container_width=True):
+                delete_predio(int(row["id"]))
+                st.rerun()
+        st.markdown("<br>", unsafe_allow_html=True)
 
 # 6. Barra de Navegación Inferior
 st.markdown("<br>", unsafe_allow_html=True)
 c1, c2, c3, c4 = st.columns(4)
 with c1:
-    if st.button("🏠 Inicio", use_container_width=True, type="primary" if st.session_state.pagina=="inicio" else "secondary"):
+    if st.button("🏠\nInicio", use_container_width=True, type="primary" if st.session_state.pagina=="inicio" else "secondary"):
         st.session_state.pagina = "inicio"; st.rerun()
 with c2:
-    if st.button("➕ Nuevo", use_container_width=True, type="primary" if st.session_state.pagina=="registrar" else "secondary"):
+    if st.button("➕\nNuevo", use_container_width=True, type="primary" if st.session_state.pagina=="registrar" else "secondary"):
         st.session_state.pagina = "registrar"; st.rerun()
 with c3:
-    if st.button("🗺️ Mapa", use_container_width=True, type="primary" if st.session_state.pagina=="mapa" else "secondary"):
+    if st.button("🗺️\nMapa", use_container_width=True, type="primary" if st.session_state.pagina=="mapa" else "secondary"):
         st.session_state.pagina = "mapa"; st.rerun()
 with c4:
-    if st.button("📋 Lista", use_container_width=True, type="primary" if st.session_state.pagina=="predios" else "secondary"):
+    if st.button("📋\nLista", use_container_width=True, type="primary" if st.session_state.pagina=="predios" else "secondary"):
         st.session_state.pagina = "predios"; st.rerun()
