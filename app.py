@@ -17,51 +17,51 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# 2. CSS de App (Colores originales, layout móvil)
+# 2. CSS de App Profesional (Inspirado en Zillow / Realtor)
 st.markdown("""
 <style>
     #MainMenu {visibility: hidden;} footer {visibility: hidden;} header {visibility: hidden;}
     .stApp { background-color: #F8F9FA; }
     .block-container { padding-top: 1.5rem; padding-bottom: 6rem; max-width: 600px; }
     
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
-    html, body, [class*="css"] { font-family: 'Poppins', sans-serif; }
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
 
+    /* Encabezado Azul Profundo (Confianza) */
     .main-header {
-        background: linear-gradient(135deg, #FFC300 0%, #FF5733 50%, #C70039 100%);
+        background: #1E3A8A; /* Azul Zillow/Realtor */
         padding: 1.5rem 1rem; border-radius: 20px; color: white;
-        text-align: center; margin-bottom: 20px; box-shadow: 0 8px 20px rgba(199, 0, 57, 0.2);
+        text-align: center; margin-bottom: 20px; box-shadow: 0 8px 20px rgba(30, 58, 138, 0.2);
     }
-    .main-header h1 { margin: 0; font-size: 24px; font-weight: 800; }
+    .main-header h1 { margin: 0; font-size: 24px; font-weight: 700; }
     .main-header p { margin: 5px 0 0 0; font-size: 13px; opacity: 0.9; }
 
-    .stat-box {
-        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-        color: white; padding: 15px; border-radius: 16px;
-        text-align: center; box-shadow: 0 4px 10px rgba(30, 60, 114, 0.15);
-    }
-    .stat-box h3 { margin: 0; font-size: 20px; font-weight: 800; }
-    .stat-box p { margin: 2px 0 0 0; font-size: 11px; opacity: 0.9; }
-
+    /* Tarjetas Blancas, Limpias, con Sombra Suave */
     .card {
-        background: white; border-radius: 16px; padding: 15px;
+        background: white; border-radius: 16px; padding: 0; overflow: hidden;
         box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #EAEAEA; margin-bottom: 15px;
     }
-    .prop-price { color: #C70039; font-size: 18px; font-weight: 800; }
-    .badge-tipo { background: #FFC300; color: #1a1a1a; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+    .card-img { width: 100%; height: 150px; object-fit: cover; }
+    .card-body { padding: 15px; }
+    
+    .prop-price { color: #059669; /* Verde Esmeralda para Dinero */ font-size: 20px; font-weight: 700; }
+    .badge-tipo { background: #E0E7FF; color: #1E3A8A; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+    .card-title { margin: 5px 0; font-size: 16px; font-weight: 600; color: #1F2937; }
+    .card-loc { font-size: 13px; color: #6B7280; display: flex; align-items: center; gap: 4px; }
 
-    /* Botones navegación */
+    /* Botones de Navegación Inferior */
     div.stButton > button {
-        background-color: white; color: #555; border: 1px solid #DDD;
-        border-radius: 15px; padding: 8px 5px; width: 100%; font-weight: 600; font-size: 13px;
+        background-color: white; color: #4B5563; border: 1px solid #E5E7EB;
+        border-radius: 12px; padding: 8px 2px; width: 100%; font-weight: 600; font-size: 12px;
+        transition: all 0.2s;
     }
     div.stButton > button[kind="primary"] { 
-        background-color: #C70039; color: white; border: none; box-shadow: 0 4px 10px rgba(199, 0, 57, 0.3);
+        background-color: #1E3A8A; color: white; border: none; box-shadow: 0 4px 10px rgba(30, 58, 138, 0.3);
     }
 </style>
 """, unsafe_allow_html=True)
 
-# 3. Lógica de Base de Datos
+# 3. Base de Datos y Datos de Ejemplo Restaurados
 DB_FILE = "quilichao_proptech.db"
 
 def init_db():
@@ -99,11 +99,21 @@ def format_cop(precio) -> str:
     except: return "$0"
 
 def cargar_ejemplos():
-    ejemplos = [("Casa Centro", "Casa", 280_000_000, 120, 3, 2, "Esquinera.", 2.9963, -76.5922, "Calle 5", "Centro", "Carlos", "3001234567")]
+    # ¡Aquí están de vuelta los 5 ejemplos originales!
+    ejemplos = [
+        ("Casa esquinera Barrio Centro", "Casa", 280_000_000, 120, 3, 2, "Casa esquinera en el corazón de Quilichao, cerca al parque principal.", 2.9963, -76.5922, "Calle 5 # 10-23", "Centro", "Carlos Muñoz", "3001234567"),
+        ("Lote 500m² vía Mondomo", "Lote", 150_000_000, 500, 0, 0, "Lote plano con acceso a vía principal.", 3.0220, -76.5510, "Km 5 vía Mondomo", "Rural", "Carlos Muñoz", "3001234567"),
+        ("Apartamento moderno Las Américas", "Apartamento", 195_000_000, 78, 2, 2, "Apartamento con acabados modernos, balcón y parqueadero.", 2.9925, -76.5850, "Carrera 8 # 12-45", "Las Américas", "Carlos Muñoz", "3001234567"),
+        ("Finca recreativa San Antonio", "Finca", 450_000_000, 3000, 4, 3, "Finca con casa principal, piscina y cultivos.", 3.0450, -76.6100, "Corregimiento San Antonio", "Rural", "Carlos Muñoz", "3001234567"),
+        ("Local comercial Parque Principal", "Local comercial", 320_000_000, 60, 0, 1, "Local sobre vía principal, alto flujo peatonal.", 2.9965, -76.5915, "Calle 4 # 9-12", "Centro", "Carlos Muñoz", "3001234567"),
+    ]
     for e in ejemplos:
         insert_predio({"titulo": e[0], "tipo": e[1], "precio": e[2], "area": e[3], "habitaciones": e[4], "banos": e[5], "descripcion": e[6], "lat": e[7], "lon": e[8], "direccion": e[9], "barrio": e[10], "comisionista": e[11], "whatsapp": e[12], "foto_base64": None})
 
+# Inicializar
 init_db()
+if len(get_predios()) == 0:
+    cargar_ejemplos()
 
 # 4. Estado de Navegación
 if "pagina" not in st.session_state: st.session_state.pagina = "inicio"
@@ -112,7 +122,7 @@ if "pagina" not in st.session_state: st.session_state.pagina = "inicio"
 st.markdown("""
 <div class="main-header">
     <h1>🏘️ Quilichao PropTech</h1>
-    <p>Gestión para comisionistas</p>
+    <p>Gestión inteligente para comisionistas</p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -121,18 +131,20 @@ df = get_predios()
 if st.session_state.pagina == "inicio":
     st.markdown("### Tu cartera")
     c1, c2 = st.columns(2)
-    with c1: st.markdown(f'<div class="stat-box"><h3>{len(df)}</h3><p>Predios</p></div>', unsafe_allow_html=True)
-    with c2: st.markdown(f'<div class="stat-box"><h3>{format_cop(df["precio"].sum()/1_000_000) if len(df)>0 else "$0"}M</h3><p>Valor</p></div>', unsafe_allow_html=True)
+    with c1: st.markdown(f'<div class="card" style="text-align:center;"><h3 style="color:#1E3A8A; margin:0;">{len(df)}</h3><p style="color:#6B7280; font-size:12px; margin:0;">Predios</p></div>', unsafe_allow_html=True)
+    with c2: st.markdown(f'<div class="card" style="text-align:center;"><h3 style="color:#059669; margin:0;">{format_cop(df["precio"].sum()/1_000_000) if len(df)>0 else "$0"}M</h3><p style="color:#6B7280; font-size:12px; margin:0;">Valor</p></div>', unsafe_allow_html=True)
     
     st.markdown("<br>### Últimos predios", unsafe_allow_html=True)
     if len(df) == 0: st.info("No hay predios. Ve a 'Registrar' o carga ejemplos.")
     for _, row in df.head(3).iterrows():
         st.markdown(f"""
         <div class="card">
-            <span class="badge-tipo">{row['tipo']}</span>
-            <h4 style="margin: 5px 0;">{row['titulo']}</h4>
-            <p class="prop-price">{format_cop(row['precio'])}</p>
-            <p style="font-size: 12px; color: #666;">📍 {row['direccion']}</p>
+            <div class="card-body">
+                <span class="badge-tipo">{row['tipo']}</span>
+                <h4 class="card-title">{row['titulo']}</h4>
+                <p class="prop-price">{format_cop(row['precio'])}</p>
+                <p class="card-loc">📍 {row['direccion']}, {row['barrio']}</p>
+            </div>
         </div>
         """, unsafe_allow_html=True)
 
@@ -160,9 +172,9 @@ elif st.session_state.pagina == "registrar":
                 st.success("Guardado"); st.rerun()
 
 elif st.session_state.pagina == "mapa":
-    st.markdown("### 🗺️ Mapa")
+    st.markdown("### 🗺️ Mapa de la cartera")
     if len(df) > 0:
-        m = folium.Map(location=[df["lat"].mean(), df["lon"].mean()], zoom_start=14)
+        m = folium.Map(location=[df["lat"].mean(), df["lon"].mean()], zoom_start=14, tiles="CartoDB positron")
         for _, row in df.iterrows():
             folium.Marker([row["lat"], row["lon"]], popup=row['titulo']).add_to(m)
         st_folium(m, width=None, height=450, returned_objects=[])
