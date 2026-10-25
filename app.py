@@ -10,7 +10,7 @@ import io
 import urllib.parse
 
 # ══════════════════════════════════════════════════════════════════════
-# CONFIGURACIÓN GENERAL (Mobile-First)
+# CONFIGURACIÓN GENERAL
 # ══════════════════════════════════════════════════════════════════════
 st.set_page_config(
     page_title="Quilichao PropTech",
@@ -20,102 +20,110 @@ st.set_page_config(
 )
 
 QUILICHAO_LAT = 2.9963
+QUILICHAO_LAT = 2.9963
 QUILICHAO_LON = -76.5922
 
 # ══════════════════════════════════════════════════════════════════════
-# ESTILOS CSS - LOOK APP PREMIUM
+# ESTILOS CSS - LOOK INMOBILIARIA DE LUJO (EE.UU.)
 # ══════════════════════════════════════════════════════════════════════
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
+    /* Fuentes: Playfair para títulos (lujo) y Inter para texto */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap');
     
-    /* Forzar fuente y color de texto oscuro */
-    html, body, [class*="css"] { font-family: 'Outfit', sans-serif !important; }
-    .stApp { background-color: #F2F4F7; color: #1E293B !important; }
-    .block-container { max-width: 650px; padding-top: 1rem; padding-bottom: 4rem; }
+    html, body, [class*="css"] { font-family: 'Inter', sans-serif !important; }
+    .stApp { background-color: #F8FAFC; color: #1E293B !important; }
+    .block-container { max-width: 700px; padding-top: 1rem; padding-bottom: 4rem; }
 
+    /* Forzar colores de texto para que no falle en modo oscuro */
     div[data-testid="stMarkdownContainer"] p, 
     div[data-testid="stMarkdownContainer"] span, 
-    div[data-testid="stMarkdownContainer"] h1, 
-    div[data-testid="stMarkdownContainer"] h2, 
-    div[data-testid="stMarkdownContainer"] h3,
-    div[data-testid="stMarkdownContainer"] h4, p, span {
-        color: #1E293B !important;
-    }
+    p, span { color: #1E293B !important; }
 
     header {visibility: hidden;} footer {visibility: hidden;} #MainMenu {visibility: hidden;}
 
-    /* Header (Naranja/Rojo original) */
+    /* Header tipo Lujo */
     .main-header {
-        background: linear-gradient(135deg, #FFC300 0%, #FF5733 50%, #C70039 100%);
-        padding: 2rem 1.5rem; border-radius: 24px; color: white !important;
-        text-align: center; margin-bottom: 20px; box-shadow: 0 10px 25px rgba(199, 0, 57, 0.2);
+        background: #0F172A; /* Azul Marino Profundo */
+        padding: 2rem 1.5rem; border-radius: 20px; color: white !important;
+        text-align: center; margin-bottom: 25px; box-shadow: 0 10px 25px rgba(15, 23, 42, 0.2);
     }
-    .main-header h1 { margin: 0; font-size: 2.2rem; font-weight: 800; color: white !important; }
-    .main-header p { margin: 0.5rem 0 0 0; font-size: 1rem; color: white !important; opacity: 0.9; }
+    .main-header h1 { 
+        margin: 0; font-family: 'Playfair Display', serif; font-size: 2.4rem; 
+        font-weight: 700; color: white !important; letter-spacing: -0.5px;
+    }
+    .main-header p { margin: 8px 0 0 0; font-size: 0.95rem; color: #94A3B8 !important; text-transform: uppercase; letter-spacing: 2px; font-weight: 600;}
 
-    /* MENÚ DE NAVEGACIÓN (Segmented Control - Píldoras) */
+    /* MENÚ DE NAVEGACIÓN (Píldoras Elegantes) */
     div[data-testid="stRadio"] > div[role="radiogroup"] {
-        display: flex; background-color: #E2E8F0; border-radius: 30px; padding: 4px; 
-        width: 100%; margin: 0 auto 20px auto; gap: 0; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+        display: flex; background-color: #FFFFFF; border-radius: 30px; padding: 5px; 
+        width: 100%; margin: 0 auto 25px auto; gap: 0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid #E2E8F0;
     }
     div[data-testid="stRadio"] > div[role="radiogroup"] > label > div:first-child { display: none !important; }
     div[data-testid="stRadio"] > div[role="radiogroup"] > label {
-        flex: 1; text-align: center; padding: 8px 0 !important; border-radius: 26px !important;
+        flex: 1; text-align: center; padding: 10px 0 !important; border-radius: 26px !important;
         margin: 0 !important; background: transparent !important; border: none !important;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important; cursor: pointer;
+        transition: all 0.3s !important; cursor: pointer;
     }
     div[data-testid="stRadio"] > div[role="radiogroup"] > label p {
         color: #64748B !important; font-weight: 600 !important; font-size: 13px !important; margin: 0 !important;
     }
     div[data-testid="stRadio"] > div[role="radiogroup"] > label[data-checked="true"] {
-        background-color: #FFFFFF !important; box-shadow: 0 4px 10px rgba(0,0,0,0.1) !important;
+        background-color: #0F172A !important; box-shadow: 0 4px 10px rgba(15, 23, 42, 0.2) !important;
     }
     div[data-testid="stRadio"] > div[role="radiogroup"] > label[data-checked="true"] p {
-        color: #C70039 !important; font-weight: 800 !important;
+        color: #FFFFFF !important; font-weight: 700 !important;
     }
 
-    /* Estadísticas */
-    .stat-box {
-        background: white; padding: 15px; border-radius: 16px;
-        text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.04); border: 1px solid #F1F5F9;
-    }
-    .stat-box h3 { margin: 0; font-size: 1.8rem; font-weight: 800; color: #C70039 !important; }
-    .stat-box p { margin: 4px 0 0 0; font-size: 0.8rem; font-weight: 600; color: #64748B !important; text-transform: uppercase; }
-
-    /* Tarjetas */
+    /* Tarjetas de Propiedades (Estilo Zillow) */
     .card {
-        background: white; border-radius: 20px; padding: 0; overflow: hidden;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid #F1F5F9;
-        transition: transform 0.2s;
+        background: white; border-radius: 16px; padding: 0; overflow: hidden;
+        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03); 
+        margin-bottom: 20px; border: 1px solid #E2E8F0; transition: transform 0.2s;
     }
-    .card:hover { transform: translateY(-3px); box-shadow: 0 12px 25px rgba(0,0,0,0.08); }
-    .card img { width: 100%; height: 180px; object-fit: cover; }
-    .card-body { padding: 18px; }
+    .card:hover { transform: translateY(-3px); box-shadow: 0 12px 20px -5px rgba(15, 23, 42, 0.1); }
+    .card-img { width: 100%; height: 200px; object-fit: cover; }
+    .card-body { padding: 20px; }
     
-    .prop-price { color: #059669 !important; font-size: 1.4rem; font-weight: 800; margin: 5px 0; }
-    .badge-tipo { background: #FEF3C7; color: #D97706 !important; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 800; text-transform: uppercase; }
+    /* Título de la propiedad con serifa */
+    .prop-title { 
+        font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700; 
+        margin: 8px 0 4px 0; color: #0F172A !important;
+    }
+    
+    .prop-price { color: #059669 !important; font-size: 1.5rem; font-weight: 800; margin: 5px 0 10px 0; }
+    .badge-tipo { 
+        background: #F1F5F9; color: #0F172A !important; padding: 4px 12px; 
+        border-radius: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+    }
 
     /* Botones */
     .stButton>button {
-        background: linear-gradient(135deg, #FF5733 0%, #C70039 100%) !important;
-        color: white !important; border: none !important; padding: 12px 20px !important; 
-        border-radius: 14px !important; font-weight: 800 !important; width: 100%; 
-        transition: all 0.3s !important; box-shadow: 0 4px 15px rgba(199, 0, 57, 0.25) !important;
+        background: #0F172A !important; color: white !important; border: none !important; 
+        padding: 12px 20px !important; border-radius: 10px !important; font-weight: 600 !important; 
+        width: 100%; transition: all 0.2s !important;
     }
-    .stButton>button:hover { transform: translateY(-2px) !important; box-shadow: 0 8px 20px rgba(199, 0, 57, 0.4) !important; }
+    .stButton>button:hover { background: #1E293B !important; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.3) !important; }
     .stButton>button p { color: white !important; }
 
-    /* Formularios y Selectbox */
-    div[data-testid="stForm"] { background: white; border-radius: 20px; padding: 20px; border: 1px solid #F1F5F9; }
-    div[data-baseweb="select"] > div { background-color: #F8FAFC !important; border-radius: 12px !important; border: 1px solid #E2E8F0 !important; }
+    /* Forms y Selects */
+    div[data-testid="stForm"] { background: white; border-radius: 16px; padding: 20px; border: 1px solid #E2E8F0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+    div[data-baseweb="select"] > div { background-color: #F8FAFC !important; border-radius: 10px !important; border: 1px solid #E2E8F0 !important; }
     div[data-baseweb="select"] * { color: #1E293B !important; }
-    .stTextInput > div > div > input { border-radius: 12px; border: 1px solid #E2E8F0; }
+    .stTextInput > div > div > input { border-radius: 10px; border: 1px solid #E2E8F0; }
+    
+    /* Estadísticas */
+    .stat-box {
+        background: white; padding: 20px; border-radius: 16px; text-align: center; 
+        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid #E2E8F0;
+    }
+    .stat-box h3 { font-family: 'Playfair Display', serif; margin: 0; font-size: 2rem; color: #0F172A !important; }
+    .stat-box p { margin: 4px 0 0 0; font-size: 0.8rem; font-weight: 600; color: #64748B !important; text-transform: uppercase; letter-spacing: 1px;}
 </style>
 """, unsafe_allow_html=True)
 
 # ══════════════════════════════════════════════════════════════════════
-# BASE DE DATOS (Lógica intacta)
+# BASE DE DATOS (Lógica Original Intacta)
 # ══════════════════════════════════════════════════════════════════════
 DB_FILE = "quilichao_proptech.db"
 
@@ -161,15 +169,18 @@ def format_cop(precio) -> str:
 init_db()
 
 # ══════════════════════════════════════════════════════════════════════
-# HEADER Y NAVEGACIÓN
+# HEADER
 # ══════════════════════════════════════════════════════════════════════
 st.markdown("""
 <div class="main-header">
-    <h1>🏘️ Quilichao PropTech</h1>
-    <p>Gestión inteligente para comisionistas</p>
+    <p>Quilichao, Cauca</p>
+    <h1>PropTech</h1>
 </div>
 """, unsafe_allow_html=True)
 
+# ══════════════════════════════════════════════════════════════════════
+# NAVEGACIÓN
+# ══════════════════════════════════════════════════════════════════════
 menu = st.radio(
     "Navegación",
     ["🏠 Inicio", "➕ Registrar", "🗺️ Mapa", "📋 Cartera"],
@@ -177,7 +188,6 @@ menu = st.radio(
     label_visibility="collapsed"
 )
 
-# Botón para cargar ejemplos (siempre visible en el tope si no hay datos, o en inicio)
 df = get_predios()
 
 # ══════════════════════════════════════════════════════════════════════
@@ -185,30 +195,29 @@ df = get_predios()
 # ══════════════════════════════════════════════════════════════════════
 if menu == "🏠 Inicio":
     c1, c2 = st.columns(2)
-    with c1: st.markdown(f"""<div class="stat-box"><h3>{len(df)}</h3><p>Predios</p></div>""", unsafe_allow_html=True)
+    with c1: st.markdown(f"""<div class="stat-box"><h3>{len(df)}</h3><p>Propiedades</p></div>""", unsafe_allow_html=True)
     with c2: 
         total = df["precio"].sum() if len(df) > 0 else 0
-        st.markdown(f"""<div class="stat-box"><h3>{format_cop(total/1_000_000)}M</h3><p>Valor Cartera</p></div>""", unsafe_allow_html=True)
+        st.markdown(f"""<div class="stat-box"><h3>{format_cop(total/1_000_000)}M</h3><p>Valor en Cartera</p></div>""", unsafe_allow_html=True)
 
-    st.markdown("### 🆕 Últimos registros")
+    st.markdown("### Propiedades Destacadas")
     
     if len(df) == 0:
-        st.info("Aún no tienes predios en tu cartera.")
-        if st.button("📥 Cargar 5 predios de ejemplo"):
+        st.info("Aún no tienes propiedades. Carga las de ejemplo.")
+        if st.button("📥 Cargar Propiedades de Ejemplo"):
             cargar_ejemplos(); st.rerun()
     else:
-        # ¡AQUÍ ESTÁ LA CORRECCIÓN! Cambiamos df.head(3) por df.iterrows() para que muestre los 5
         for _, row in df.iterrows():
-            img_html = f'<img src="data:image/jpeg;base64,{row["foto_base64"]}">' if pd.notna(row["foto_base64"]) and row["foto_base64"] else '<div style="height:150px;background:#F1F5F9;display:flex;align-items:center;justify-content:center;font-size:3rem;">🏠</div>'
+            img_html = f'<img src="data:image/jpeg;base64,{row["foto_base64"]}" class="card-img">' if pd.notna(row["foto_base64"]) and row["foto_base64"] else '<div class="card-img" style="background:#E2E8F0;display:flex;align-items:center;justify-content:center;font-size:3rem;">🏠</div>'
             
             st.markdown(f"""
             <div class="card">
                 {img_html}
                 <div class="card-body">
                     <span class="badge-tipo">{row['tipo']}</span>
-                    <h4 style="margin: 8px 0 4px 0; font-weight: 800;">{row['titulo']}</h4>
-                    <p class="prop-price">{format_cop(row['precio'])}</p>
-                    <p style="font-size: 13px; color: #64748B !important;">📍 {row['direccion']}, {row['barrio']}</p>
+                    <div class="prop-title">{row['titulo']}</div>
+                    <div class="prop-price">{format_cop(row['precio'])}</div>
+                    <p style="font-size: 13px; color: #64748B !important; margin: 0;">📍 {row['direccion']}, {row['barrio']}</p>
                 </div>
             </div>
             """, unsafe_allow_html=True)
@@ -217,13 +226,13 @@ if menu == "🏠 Inicio":
             cargar_ejemplos(); st.rerun()
 
 elif menu == "➕ Registrar":
-    st.markdown("### ➕ Nuevo Predio")
+    st.markdown("<h3 style='font-family:Playfair Display;'>Registrar Propiedad</h3>", unsafe_allow_html=True)
     
     if "pick_lat" not in st.session_state: st.session_state.pick_lat = QUILICHAO_LAT; st.session_state.pick_lon = QUILICHAO_LON
         
-    st.markdown("**📍 Toca el mapa para ubicar el predio:**")
+    st.markdown("**📍 Toca el mapa para ubicar la propiedad:**")
     m_pick = folium.Map(location=[st.session_state.pick_lat, st.session_state.pick_lon], zoom_start=14)
-    folium.Marker([st.session_state.pick_lat, st.session_state.pick_lon], icon=folium.Icon(color="red", icon="home", prefix="fa")).add_to(m_pick)
+    folium.Marker([st.session_state.pick_lat, st.session_state.pick_lon], icon=folium.Icon(color="darkblue", icon="home", prefix="fa")).add_to(m_pick)
     map_result = st_folium(m_pick, height=250, width=None, returned_objects=["last_clicked"], key="picker")
     
     if map_result and map_result.get("last_clicked"):
@@ -233,8 +242,8 @@ elif menu == "➕ Registrar":
     st.caption(f"📍 Coordenadas: {st.session_state.pick_lat:.6f}, {st.session_state.pick_lon:.6f}")
 
     with st.form("form_predio", clear_on_submit=True):
-        titulo = st.text_input("Título *")
-        tipo = st.selectbox("Tipo *", ["Casa", "Apartamento", "Lote", "Finca", "Local comercial", "Oficina", "Bodega"])
+        titulo = st.text_input("Título de la propiedad *")
+        tipo = st.selectbox("Tipo de inmueble *", ["Casa", "Apartamento", "Lote", "Finca", "Local comercial", "Oficina", "Bodega"])
         c1, c2 = st.columns(2)
         with c1: precio = st.number_input("Precio (COP) *", min_value=0, step=1_000_000)
         with c2: area = st.number_input("Área (m²) *", min_value=0.0, step=1.0)
@@ -243,11 +252,11 @@ elif menu == "➕ Registrar":
         barrio = st.text_input("Barrio / Sector")
         descripcion = st.text_area("Descripción", height=80)
         
-        comisionista = st.text_input("Tu nombre *")
+        comisionista = st.text_input("Nombre del comisionista *")
         whatsapp = st.text_input("WhatsApp *")
         foto = st.file_uploader("Foto principal", type=["jpg", "jpeg", "png"])
         
-        if st.form_submit_button("Guardar Predio 💾"):
+        if st.form_submit_button("Guardar Propiedad 💾"):
             if titulo and direccion and comisionista and whatsapp and precio > 0:
                 foto_b64 = None
                 if foto:
@@ -258,45 +267,45 @@ elif menu == "➕ Registrar":
                     "descripcion": descripcion, "lat": st.session_state.pick_lat, "lon": st.session_state.pick_lon,
                     "direccion": direccion, "barrio": barrio, "comisionista": comisionista, "whatsapp": whatsapp, "foto_base64": foto_b64
                 })
-                st.success("✅ Predio guardado exitosamente")
+                st.success("✅ Propiedad registrada exitosamente")
                 st.balloons()
             else:
                 st.error("❌ Completa los campos obligatorios y verifica el precio.")
 
 elif menu == "🗺️ Mapa":
-    st.markdown("### 🗺️ Mapa de la cartera")
+    st.markdown("<h3 style='font-family:Playfair Display;'>Mapa de Propiedades</h3>", unsafe_allow_html=True)
     if len(df) > 0:
-        m = folium.Map(location=[df["lat"].mean(), df["lon"].mean()], zoom_start=14, tiles="OpenStreetMap")
-        colores = {"Casa": "blue", "Apartamento": "purple", "Lote": "green", "Finca": "darkgreen", "Local comercial": "red"}
+        m = folium.Map(location=[df["lat"].mean(), df["lon"].mean()], zoom_start=14, tiles="CartoDB positron") # Fondo limpio
+        colores = {"Casa": "darkblue", "Apartamento": "cadetblue", "Lote": "darkgreen", "Finca": "green", "Local comercial": "darkred"}
         
         for _, row in df.iterrows():
-            popup = f"<div style='font-family:Outfit;'><h4 style='color:#C70039;margin-bottom:0;'>{row['titulo']}</h4><p style='color:#059669;font-weight:bold;'>{format_cop(row['precio'])}</p><p>{row['direccion']}</p></div>"
+            popup = f"<div style='font-family:Inter;'><h4 style='font-family:Playfair Display; color:#0F172A; margin-bottom:5px;'>{row['titulo']}</h4><p style='color:#059669;font-weight:bold; font-size:16px; margin:0;'>{format_cop(row['precio'])}</p><p style='color:#64748B; margin:5px 0 0 0;'>{row['direccion']}</p></div>"
             folium.Marker([row["lat"], row["lon"]], popup=folium.Popup(popup, max_width=250), icon=folium.Icon(color=colores.get(row["tipo"], "gray"), icon="home", prefix="fa")).add_to(m)
         st_folium(m, width=None, height=500, returned_objects=[])
 
 elif menu == "📋 Cartera":
-    st.markdown("### 📋 Mis Predios")
+    st.markdown("<h3 style='font-family:Playfair Display;'>Mi Cartera</h3>", unsafe_allow_html=True)
     if len(df) == 0: 
-        st.info("Cartera vacía.")
+        st.info("Tu cartera está vacía.")
     
     for _, row in df.iterrows():
         st.markdown(f"""
-        <div class="card" style="padding: 15px;">
+        <div class="card" style="padding: 20px;">
             <span class="badge-tipo">{row['tipo']}</span>
-            <h4 style="margin: 8px 0 0 0;">{row['titulo']}</h4>
-            <p class="prop-price">{format_cop(row['precio'])}</p>
+            <div class="prop-title">{row['titulo']}</div>
+            <div class="prop-price">{format_cop(row['precio'])}</div>
         </div>
         """, unsafe_allow_html=True)
         
-        with st.expander("👁️ Ver ficha completa"):
+        with st.expander("Ver detalles y compartir"):
             st.write(f"📍 **Dirección:** {row['direccion']}, {row['barrio']}")
             st.write(f"📐 **Área:** {row['area']} m²")
             if row['descripcion']: st.write(row['descripcion'])
             
             c1, c2 = st.columns(2)
-            msg = f"Hola, te comparto este predio:\n🏘️ *{row['titulo']}*\n💰 {format_cop(row['precio'])}\n📍 {row['direccion']}\n🗺️ https://www.google.com/maps?q={row['lat']},{row['lon']}"
+            msg = f"Hola, te comparto esta propiedad:\n🏘️ *{row['titulo']}*\n💰 {format_cop(row['precio'])}\n📍 {row['direccion']}\n🗺️ https://www.google.com/maps?q={row['lat']},{row['lon']}"
             
-            c1.link_button("📱 WhatsApp", f"https://wa.me/?text={urllib.parse.quote(msg)}", use_container_width=True)
+            c1.link_button("📱 Compartir", f"https://wa.me/?text={urllib.parse.quote(msg)}", use_container_width=True)
             if c2.button("🗑️ Eliminar", key=f"del_{row['id']}", use_container_width=True):
                 delete_predio(int(row["id"])); st.rerun()
-        st.write("") # Espacio
+        st.write("") 
