@@ -20,84 +20,86 @@ st.set_page_config(
 )
 
 QUILICHAO_LAT = 2.9963
-QUILICHAO_LAT = 2.9963
 QUILICHAO_LON = -76.5922
 
 # ══════════════════════════════════════════════════════════════════════
-# ESTILOS CSS - LOOK INMOBILIARIA DE LUJO (EE.UU.)
+# ESTILOS CSS - LOOK INMOBILIARIA DE LUJO (CORREGIDO)
 # ══════════════════════════════════════════════════════════════════════
 st.markdown("""
 <style>
-    /* Fuentes: Playfair para títulos (lujo) y Inter para texto */
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap');
     
     html, body, [class*="css"] { font-family: 'Inter', sans-serif !important; }
     .stApp { background-color: #F8FAFC; color: #1E293B !important; }
     .block-container { max-width: 700px; padding-top: 1rem; padding-bottom: 4rem; }
 
-    /* Forzar colores de texto para que no falle en modo oscuro */
-    div[data-testid="stMarkdownContainer"] p, 
-    div[data-testid="stMarkdownContainer"] span, 
-    p, span { color: #1E293B !important; }
-
     header {visibility: hidden;} footer {visibility: hidden;} #MainMenu {visibility: hidden;}
 
-    /* Header tipo Lujo */
+    /* 1. Header tipo Lujo (Forzando letras blancas) */
     .main-header {
         background: #0F172A; /* Azul Marino Profundo */
-        padding: 2rem 1.5rem; border-radius: 20px; color: white !important;
+        padding: 2.5rem 1.5rem; border-radius: 20px; color: white !important;
         text-align: center; margin-bottom: 25px; box-shadow: 0 10px 25px rgba(15, 23, 42, 0.2);
     }
     .main-header h1 { 
-        margin: 0; font-family: 'Playfair Display', serif; font-size: 2.4rem; 
-        font-weight: 700; color: white !important; letter-spacing: -0.5px;
+        margin: 0; font-family: 'Playfair Display', serif; font-size: 2.6rem; 
+        font-weight: 700; color: #FFFFFF !important; letter-spacing: -0.5px;
     }
-    .main-header p { margin: 8px 0 0 0; font-size: 0.95rem; color: #94A3B8 !important; text-transform: uppercase; letter-spacing: 2px; font-weight: 600;}
+    .main-header p { 
+        margin: 8px 0 0 0; font-size: 0.85rem; color: #94A3B8 !important; 
+        text-transform: uppercase; letter-spacing: 2px; font-weight: 600;
+    }
 
-    /* MENÚ DE NAVEGACIÓN (Píldoras Elegantes) */
-    div[data-testid="stRadio"] > div[role="radiogroup"] {
-        display: flex; background-color: #FFFFFF; border-radius: 30px; padding: 5px; 
-        width: 100%; margin: 0 auto 25px auto; gap: 0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid #E2E8F0;
+    /* 2. MENÚ DE NAVEGACIÓN (Quitando los circulitos feos) */
+    /* Ocultar el circulito del radio button */
+    div[data-testid="stRadio"] div[role="radiogroup"] label > div:first-child { display: none !important; }
+    
+    /* Estilo del contenedor de los botones */
+    div[data-testid="stRadio"] div[role="radiogroup"] {
+        display: flex; background-color: #E2E8F0; border-radius: 30px; padding: 5px; 
+        width: 100%; margin: 0 auto 25px auto; gap: 2px;
     }
-    div[data-testid="stRadio"] > div[role="radiogroup"] > label > div:first-child { display: none !important; }
-    div[data-testid="stRadio"] > div[role="radiogroup"] > label {
-        flex: 1; text-align: center; padding: 10px 0 !important; border-radius: 26px !important;
+    
+    /* Estilo de cada botón (inactivo) */
+    div[data-testid="stRadio"] div[role="radiogroup"] label {
+        flex: 1; text-align: center; padding: 10px 0 !important; border-radius: 25px !important;
         margin: 0 !important; background: transparent !important; border: none !important;
         transition: all 0.3s !important; cursor: pointer;
     }
-    div[data-testid="stRadio"] > div[role="radiogroup"] > label p {
-        color: #64748B !important; font-weight: 600 !important; font-size: 13px !important; margin: 0 !important;
+    div[data-testid="stRadio"] div[role="radiogroup"] label p {
+        color: #475569 !important; font-weight: 600 !important; font-size: 14px !important; margin: 0 !important;
     }
-    div[data-testid="stRadio"] > div[role="radiogroup"] > label[data-checked="true"] {
+    
+    /* Estilo del botón ACTIVO (Azul Marino) */
+    div[data-testid="stRadio"] div[role="radiogroup"] label[data-checked="true"] {
         background-color: #0F172A !important; box-shadow: 0 4px 10px rgba(15, 23, 42, 0.2) !important;
     }
-    div[data-testid="stRadio"] > div[role="radiogroup"] > label[data-checked="true"] p {
+    div[data-testid="stRadio"] div[role="radiogroup"] label[data-checked="true"] p {
         color: #FFFFFF !important; font-weight: 700 !important;
     }
 
-    /* Tarjetas de Propiedades (Estilo Zillow) */
+    /* 3. Tarjetas de Propiedades (Letras oscuras y legibles) */
     .card {
         background: white; border-radius: 16px; padding: 0; overflow: hidden;
-        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03); 
-        margin-bottom: 20px; border: 1px solid #E2E8F0; transition: transform 0.2s;
+        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 20px; 
+        border: 1px solid #E2E8F0; transition: transform 0.2s;
     }
     .card:hover { transform: translateY(-3px); box-shadow: 0 12px 20px -5px rgba(15, 23, 42, 0.1); }
     .card-img { width: 100%; height: 200px; object-fit: cover; }
     .card-body { padding: 20px; }
     
-    /* Título de la propiedad con serifa */
     .prop-title { 
-        font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700; 
+        font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; 
         margin: 8px 0 4px 0; color: #0F172A !important;
     }
-    
     .prop-price { color: #059669 !important; font-size: 1.5rem; font-weight: 800; margin: 5px 0 10px 0; }
     .badge-tipo { 
-        background: #F1F5F9; color: #0F172A !important; padding: 4px 12px; 
+        background: #F1F5F9; color: #0F172A !important; padding: 5px 12px; 
         border-radius: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
     }
+    .card-text { font-size: 14px; color: #475569 !important; margin: 0; }
 
-    /* Botones */
+    /* 4. Botones de acción */
     .stButton>button {
         background: #0F172A !important; color: white !important; border: none !important; 
         padding: 12px 20px !important; border-radius: 10px !important; font-weight: 600 !important; 
@@ -106,13 +108,13 @@ st.markdown("""
     .stButton>button:hover { background: #1E293B !important; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.3) !important; }
     .stButton>button p { color: white !important; }
 
-    /* Forms y Selects */
-    div[data-testid="stForm"] { background: white; border-radius: 16px; padding: 20px; border: 1px solid #E2E8F0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+    /* 5. Formularios */
+    div[data-testid="stForm"] { background: white; border-radius: 16px; padding: 20px; border: 1px solid #E2E8F0; }
     div[data-baseweb="select"] > div { background-color: #F8FAFC !important; border-radius: 10px !important; border: 1px solid #E2E8F0 !important; }
     div[data-baseweb="select"] * { color: #1E293B !important; }
     .stTextInput > div > div > input { border-radius: 10px; border: 1px solid #E2E8F0; }
-    
-    /* Estadísticas */
+
+    /* 6. Estadísticas (Inicio) */
     .stat-box {
         background: white; padding: 20px; border-radius: 16px; text-align: center; 
         box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid #E2E8F0;
@@ -123,7 +125,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ══════════════════════════════════════════════════════════════════════
-# BASE DE DATOS (Lógica Original Intacta)
+# BASE DE DATOS (Intacta)
 # ══════════════════════════════════════════════════════════════════════
 DB_FILE = "quilichao_proptech.db"
 
@@ -217,7 +219,7 @@ if menu == "🏠 Inicio":
                     <span class="badge-tipo">{row['tipo']}</span>
                     <div class="prop-title">{row['titulo']}</div>
                     <div class="prop-price">{format_cop(row['precio'])}</div>
-                    <p style="font-size: 13px; color: #64748B !important; margin: 0;">📍 {row['direccion']}, {row['barrio']}</p>
+                    <p class="card-text">📍 {row['direccion']}, {row['barrio']}</p>
                 </div>
             </div>
             """, unsafe_allow_html=True)
@@ -226,12 +228,13 @@ if menu == "🏠 Inicio":
             cargar_ejemplos(); st.rerun()
 
 elif menu == "➕ Registrar":
-    st.markdown("<h3 style='font-family:Playfair Display;'>Registrar Propiedad</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='font-family:Playfair Display; color:#0F172A;'>Registrar Propiedad</h3>", unsafe_allow_html=True)
     
     if "pick_lat" not in st.session_state: st.session_state.pick_lat = QUILICHAO_LAT; st.session_state.pick_lon = QUILICHAO_LON
         
     st.markdown("**📍 Toca el mapa para ubicar la propiedad:**")
-    m_pick = folium.Map(location=[st.session_state.pick_lat, st.session_state.pick_lon], zoom_start=14)
+    # CORRECCIÓN: Volvemos al mapa estándar OpenStreetMap
+    m_pick = folium.Map(location=[st.session_state.pick_lat, st.session_state.pick_lon], zoom_start=14, tiles="OpenStreetMap")
     folium.Marker([st.session_state.pick_lat, st.session_state.pick_lon], icon=folium.Icon(color="darkblue", icon="home", prefix="fa")).add_to(m_pick)
     map_result = st_folium(m_pick, height=250, width=None, returned_objects=["last_clicked"], key="picker")
     
@@ -273,9 +276,10 @@ elif menu == "➕ Registrar":
                 st.error("❌ Completa los campos obligatorios y verifica el precio.")
 
 elif menu == "🗺️ Mapa":
-    st.markdown("<h3 style='font-family:Playfair Display;'>Mapa de Propiedades</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='font-family:Playfair Display; color:#0F172A;'>Mapa de Propiedades</h3>", unsafe_allow_html=True)
     if len(df) > 0:
-        m = folium.Map(location=[df["lat"].mean(), df["lon"].mean()], zoom_start=14, tiles="CartoDB positron") # Fondo limpio
+        # CORRECCIÓN: Volvemos al mapa estándar OpenStreetMap
+        m = folium.Map(location=[df["lat"].mean(), df["lon"].mean()], zoom_start=14, tiles="OpenStreetMap")
         colores = {"Casa": "darkblue", "Apartamento": "cadetblue", "Lote": "darkgreen", "Finca": "green", "Local comercial": "darkred"}
         
         for _, row in df.iterrows():
@@ -284,7 +288,7 @@ elif menu == "🗺️ Mapa":
         st_folium(m, width=None, height=500, returned_objects=[])
 
 elif menu == "📋 Cartera":
-    st.markdown("<h3 style='font-family:Playfair Display;'>Mi Cartera</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='font-family:Playfair Display; color:#0F172A;'>Mi Cartera</h3>", unsafe_allow_html=True)
     if len(df) == 0: 
         st.info("Tu cartera está vacía.")
     
