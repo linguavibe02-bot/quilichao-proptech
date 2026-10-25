@@ -23,7 +23,7 @@ QUILICHAO_LAT = 2.9963
 QUILICHAO_LON = -76.5922
 
 # ══════════════════════════════════════════════════════════════════════
-# ESTILOS CSS - LOOK INMOBILIARIA (ZILLOW STYLE)
+# ESTILOS CSS - LOOK INMOBILIARIA DE LUJO (TEXTO RESTAURADO)
 # ══════════════════════════════════════════════════════════════════════
 st.markdown("""
 <style>
@@ -35,21 +35,27 @@ st.markdown("""
 
     header {visibility: hidden;} footer {visibility: hidden;} #MainMenu {visibility: hidden;}
 
-    /* 1. Header tipo Lujo */
+    /* 1. HEADER TIPO LUJO (Texto original restaurado) */
     .main-header {
-        background: #0F172A; padding: 2.5rem 1.5rem; border-radius: 20px; color: white !important;
-        text-align: center; margin-bottom: 20px; box-shadow: 0 10px 25px rgba(15, 23, 42, 0.2);
+        background: linear-gradient(135deg, #0B1120 0%, #1E293B 100%);
+        padding: 2.5rem 1.5rem 2rem 1.5rem; 
+        border-radius: 20px; color: white !important;
+        text-align: center; margin-bottom: 20px; 
+        box-shadow: 0 12px 30px rgba(15, 23, 42, 0.3);
+        border-bottom: 3px solid #D4AF37; 
     }
+    .header-icon { font-size: 2.5rem; margin-bottom: 10px; }
     .main-header h1 { 
-        margin: 0; font-family: 'Playfair Display', serif; font-size: 2.6rem; 
+        margin: 0; font-family: 'Playfair Display', serif; font-size: 2.2rem; 
         font-weight: 700; color: #FFFFFF !important; letter-spacing: -0.5px;
     }
+    /* Subtítulo con el texto original */
     .main-header p { 
-        margin: 8px 0 0 0; font-size: 0.85rem; color: #94A3B8 !important; 
-        text-transform: uppercase; letter-spacing: 2px; font-weight: 600;
+        margin: 10px 0 0 0; font-size: 0.85rem; color: #D4AF37 !important; 
+        letter-spacing: 0.5px; font-weight: 500; line-height: 1.4;
     }
 
-    /* 2. PESTAÑAS (TABS) - Estilo Zillow/Redfin */
+    /* 2. PESTAÑAS (TABS) - Estilo Zillow */
     .stTabs [data-baseweb="tab-list"] {
         gap: 20px; background-color: transparent; border-bottom: 1px solid #E2E8F0; padding-bottom: 10px; margin-bottom: 20px;
     }
@@ -57,12 +63,10 @@ st.markdown("""
         height: 50px; background-color: transparent; border: none; padding: 0 10px;
         font-weight: 600; font-size: 15px; color: #64748B;
     }
-    /* Pestaña activa */
     .stTabs [aria-selected="true"] {
         color: #0F172A !important; font-weight: 800 !important;
         border-bottom: 3px solid #0F172A !important;
     }
-    .stTabs [data-baseweb="tab"]:hover { color: #0F172A; }
 
     /* 3. Tarjetas de Propiedades */
     .card {
@@ -110,7 +114,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ══════════════════════════════════════════════════════════════════════
-# BASE DE DATOS (Intacta)
+# BASE DE DATOS
 # ══════════════════════════════════════════════════════════════════════
 DB_FILE = "quilichao_proptech.db"
 
@@ -156,17 +160,18 @@ def format_cop(precio) -> str:
 init_db()
 
 # ══════════════════════════════════════════════════════════════════════
-# HEADER
+# HEADER (Texto original y diseño lujoso)
 # ══════════════════════════════════════════════════════════════════════
 st.markdown("""
 <div class="main-header">
-    <p>Quilichao, Cauca</p>
-    <h1>PropTech</h1>
+    <div class="header-icon">🏘️</div>
+    <h1>Quilichao PropTech</h1>
+    <p>La herramienta SIG + CRM para comisionistas de Santander de Quilichao</p>
 </div>
 """, unsafe_allow_html=True)
 
 # ══════════════════════════════════════════════════════════════════════
-# PESTAÑAS (REEMPLAZA AL MENÚ DE PÍLDORAS)
+# PESTAÑAS (TABS)
 # ══════════════════════════════════════════════════════════════════════
 tab_inicio, tab_registrar, tab_mapa, tab_cartera = st.tabs([
     "🏠 Inicio", "➕ Registrar", "🗺️ Mapa", "📋 Cartera"
